@@ -109,58 +109,140 @@ double get_car_price(const CAR* car) {
     return car ? car->price : 0.0;
 }
 
-void input_car_data(CAR* car, int car_number) {
-    if (!car) return;
-    
-    char buffer[100];
-    
-    printf("\nCar %d \n", car_number);
-    
-    printf("Enter brand: ");
-    scanf("%99s", buffer);
-    set_car_brand(car, buffer);
-    
-    printf("Enter color: ");
-    scanf("%99s", buffer);
-    set_car_color(car, buffer);
-    
-    printf("Enter serial number: ");
-    scanf("%99s", buffer);
-    set_car_serial(car, buffer);
-    
-    printf("Enter registration number: ");
-    scanf("%99s", buffer);
-    set_car_reg_number(car, buffer);
-    
-    printf("Enter year of manufacture: ");
-    int year;
-    scanf("%d", &year);
-    set_car_year_manufacture(car, year);
-    
-    printf("Enter year of last inspection: ");
-    scanf("%d", &year);
-    set_car_year_inspection(car, year);
-    
-    printf("Enter price: ");
-    double price;
-    scanf("%lf", &price);
-    set_car_price(car, price);
-}
-
-void print_car_info(const CAR* car) {
-    if (!car) return;
-    
-    printf("\nCar\n");
-    printf("Brand: %s\n", get_car_brand(car));
-    printf("Color: %s\n", get_car_color(car));
-    printf("Serial number: %s\n", get_car_serial(car));
-    printf("Registration number: %s\n", get_car_reg_number(car));
-    printf("Year of manufacture: %d\n", get_car_year_manufacture(car));
-    printf("Year of last inspection: %d\n", get_car_year_inspection(car));
-    printf("Price: %.2f\n", get_car_price(car));
+void print_car_info(const CAR* car, FILE* output) {
+    if (!car || !output) return;
+    fprintf(output, "\n");
+    fprintf(output, "Brand: %s\n", get_car_brand(car));
+    fprintf(output, "Color: %s\n", get_car_color(car));
+    fprintf(output, "Serial number: %s\n", get_car_serial(car));
+    fprintf(output, "Registration number: %s\n", get_car_reg_number(car));
+    fprintf(output, "Year of manufacture: %d\n", get_car_year_manufacture(car));
+    fprintf(output, "Year of inspection: %d\n", get_car_year_inspection(car));
+    fprintf(output, "Price: %.2f\n", get_car_price(car));
+    fprintf(output, "\n");
 }
 
 int is_car_older_than(const CAR* car, int years, int current_year) {
     if (!car) return 0;
     return (current_year - get_car_year_manufacture(car)) > years;
+}
+
+CAR** read_cars_from_file(const char* filename, int* count) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("Cant open input file");
+        *count = 0;
+        return NULL;
+    }
+    
+    
+    int num_cars;
+    if (fscanf(file, "%d", &num_cars) != 1 || num_cars <= 0) {
+        printf("Invalid format\n");
+        fclose(file);
+        *count = 0;
+        return NULL;
+    }
+    
+    
+    CAR** cars = (CAR**)malloc(num_cars * sizeof(CAR*));
+    if (!cars) {
+        printf("Memory allocation error\n");
+        fclose(file);
+        *count = 0;
+        return NULL;
+    }
+    
+    char buffer[100];
+    
+    
+    for (int i = 0; i < num_cars; i++) {
+        cars[i] = create_car();
+        
+        
+        if (fscanf(file, "%99s", buffer) != 1) {
+            printf("No brand for car %d\n", i + 1);
+            break;
+        }
+        set_car_brand(cars[i], buffer);
+        
+        
+        if (fscanf(file, "%99s", buffer) != 1) {
+            printf("No color for car %d\n", i + 1);
+            break;
+        }
+        set_car_color(cars[i], buffer);
+        
+        
+        if (fscanf(file, "%99s", buffer) != 1) {
+            printf("No serial number for car %d\n", i + 1);
+            break;
+        }
+        set_car_serial(cars[i], buffer);
+        
+        
+        if (fscanf(file, "%99s", buffer) != 1) {
+            printf("No registration number for car %d\n", i + 1);
+            break;
+        }
+        set_car_reg_number(cars[i], buffer);
+        
+        
+        int year;
+        if (fscanf(file, "%d", &year) != 1) {
+            printf("No year of manufacture for car %d\n", i + 1);
+            break;
+        }
+        set_car_year_manufacture(cars[i], year);
+        
+        
+        if (fscanf(file, "%d", &year) != 1) {
+            printf("No year of inspection for car %d\n", i + 1);
+            break;
+        }
+        set_car_year_inspection(cars[i], year);
+        
+        
+        double price;
+        if (fscanf(file, "%lf", &price) != 1) {
+            printf("No price for car %d\n", i + 1);
+            break;
+        }
+        set_car_price(cars[i], price);
+    }
+    
+    fclose(file);
+    *count = num_cars;
+    return cars;
+}
+
+void write_cars_to_file(const char* filename, CAR** cars, int count, int current_year) {
+    FILE* file = fopen(filename, "w");
+    if (!file) {
+        printf("Cant open output file");
+        return;
+    }
+    
+    
+    fprintf(file, "Cars: %d\n", count);
+    
+    for (int i = 0; i < count; i++) {
+        print_car_info(cars[i], file);
+    }
+    
+    fprintf(file, "\nCars older than 3 years:\n");
+    int found = 0;
+    for (int i = 0; i < count; i++) {
+        if (is_car_older_than(cars[i], 3, current_year)) {
+            print_car_info(cars[i], file);
+            found = 1;
+        }
+    }
+    
+    if (!found) {
+        fprintf(file, "\nNo cars older than 3 years\n");
+    }
+    
+    fclose(file);
+    printf("Output written to %s\n", filename);
 }

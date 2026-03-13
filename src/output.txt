@@ -1,0 +1,48 @@
+Cars: 3
+
+Brand: Toyota
+Color: Red
+Serial number: SN12345
+Registration number: ABC-123
+Year of manufacture: 2019
+Year of inspection: 2025
+Price: 25000.00
+
+
+Brand: BMW
+Color: Black
+Serial number: SN67890
+Registration number: XYZ-789
+Year of manufacture: 2021
+Year of inspection: 2025
+Price: 35000.00
+
+
+Brand: Honda
+Color: Blue
+Serial number: SN54321
+Registration number: DEF-456
+Year of manufacture: 2024
+Year of inspection: 2026
+Price: 18000.00
+
+
+Cars older than 3 years:
+
+Brand: Toyota
+Color: Red
+Serial number: SN12345
+Registration number: ABC-123
+Year of manufacture: 2019
+Year of inspection: 2025
+Price: 25000.00
+
+
+Brand: BMW
+Color: Black
+Serial number: SN67890
+Registration number: XYZ-789
+Year of manufacture: 2021
+Year of inspection: 2025
+Price: 35000.00
+

@@ -4,42 +4,24 @@
 
 
 #define CURRENT_YEAR 2026  
+#define INPUT_FILE "src/input.txt"
+#define OUTPUT_FILE "src/output.txt"
 
 int main() {
-    int num_cars;
+    printf("Reading info");
     
-    printf("Enter number of cars: ");
-    scanf("%d", &num_cars);
+    int n;
+    CAR** cars = read_cars_from_file(INPUT_FILE, &n);
     
-    
-    CAR** cars = (CAR**)malloc(num_cars * sizeof(CAR*));
-    
-    
-    for (int i = 0; i < num_cars; i++) {
-        cars[i] = create_car();
-        input_car_data(cars[i], i + 1);
+    if (!cars || n == 0) {
+        printf("Error loading from file\n");
+        return 1;
     }
+    printf("Loaded %d cars\n", n);
     
+    write_cars_to_file(OUTPUT_FILE, cars, n, CURRENT_YEAR);
     
-    printf("\nAll cars:\n");
-    for (int i = 0; i < num_cars; i++) {
-        print_car_info(cars[i]);
-    }
-    
-    printf("\nCars older than 3 years:\n");
-    int found = 0;
-    for (int i = 0; i < num_cars; i++) {
-        if (is_car_older_than(cars[i], 3, CURRENT_YEAR)) {
-            print_car_info(cars[i]);
-            found = 1;
-        }
-    }
-    
-    if (!found) {
-        printf("\nNo cars older than 3 years\n");
-    }
-    
-    for (int i = 0; i < num_cars; i++) {
+    for (int i = 0; i < n; i++) {
         free_car(cars[i]);
     }
     free(cars);

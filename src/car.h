@@ -1,15 +1,12 @@
+#include <stdio.h>
 #ifndef CAR_H
 #define CAR_H
 
-
 typedef struct CAR CAR;
-
 
 CAR* create_car();
 
-
 void free_car(CAR* car);
-
 
 void set_car_brand(CAR* car, const char* brand);
 void set_car_color(CAR* car, const char* color);
@@ -19,7 +16,6 @@ void set_car_year_manufacture(CAR* car, int year);
 void set_car_year_inspection(CAR* car, int year);
 void set_car_price(CAR* car, double price);
 
-
 const char* get_car_brand(const CAR* car);
 const char* get_car_color(const CAR* car);
 const char* get_car_serial(const CAR* car);
@@ -28,9 +24,10 @@ int get_car_year_manufacture(const CAR* car);
 int get_car_year_inspection(const CAR* car);
 double get_car_price(const CAR* car);
 
+CAR** read_cars_from_file(const char* filename, int* count);
+void write_cars_to_file(const char* filename, CAR** cars, int count, int current_year);
 
-void input_car_data(CAR* car, int car_number);
-void print_car_info(const CAR* car);
+void print_car_info(const CAR* car, FILE* output);
 int is_car_older_than(const CAR* car, int years, int current_year);
 
 #endif
