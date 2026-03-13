@@ -17,7 +17,7 @@ int main() {
         printf("Error loading from file\n");
         return 1;
     }
-    printf("Loaded %d cars\n", n);
+    printf("\nLoaded %d cars\n", n);
     
     write_cars_to_file(OUTPUT_FILE, cars, n, CURRENT_YEAR);
     
